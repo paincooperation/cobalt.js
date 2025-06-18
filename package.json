@@ -1,0 +1,23 @@
+{
+  "name": "cobalt.js",
+  "version": "1.0.0",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc",
+    "build-dev": "tsc --watch",
+    "start": "node .",
+    "start-dev": "node . --cobalt-dev --max-old-space-size=65536 ",
+    "dev": "npm install && npm run build && (npm run build-dev & nodemon --watch dist --exec 'npm run start-dev')"
+  },
+  "keywords": [],
+  "author": "paincooperation",
+  "license": "ISC",
+  "description": "Cobalt protocol implementation for Node JS.",
+  "devDependencies": {
+    "@types/node": "^24.0.1",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "colors": "^1.4.0"
+  }
+}
