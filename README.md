@@ -2,4 +2,10 @@
 
 Cobalt protocol implementation for Node JS.
 
-Currently this protocol is **experimental**.
+Cobalt is a **experimental** protocol which uses chunking instead of streams. It is an order-insensitive transport protocol.
+
+*Note: This project is not related to the [Cobalt programming language](https://cobalt-lang.org/) or any other projects named "Cobalt". This is a separate, independent protocol implementation for Node.js.*
+
+---
+
+[License](./LICENSE) | [Docs](./docs/index.md) | PAIN Cooperation
