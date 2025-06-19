@@ -19,5 +19,13 @@
   },
   "dependencies": {
     "colors": "^1.4.0"
-  }
+  },
+  "private": false,
+  "contributors": [
+    {
+      "name": "37o1",
+      "email": "37o1@proton.me",
+      "url": "https://github.com/37o1"
+    }
+  ]
 }
