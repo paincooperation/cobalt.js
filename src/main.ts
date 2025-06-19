@@ -1,6 +1,6 @@
 import { createHash, Hash, randomBytes } from "crypto";
 import { createSocket, Socket } from "dgram";
-import { exit } from "process";
+import { argv, exit } from "process";
 
 export namespace cobalt {
 	export type Serializer <T extends any = any> = (data: T) => Buffer<ArrayBufferLike>;
@@ -371,29 +371,30 @@ export namespace cobalt {
 	}
 }
 
-const server = cobalt.createShard(6);
-server.listen("::", 3000);
-const client = cobalt.createShard(6);
-client.listen("::", 4040);
+if (argv.includes("--argon-test-transfer")) {
+	const server = cobalt.createShard(6);
+	server.listen("::", 3000);
+	const client = cobalt.createShard(6);
+	client.listen("::", 4040);
 
-const server_api = server.api<any>("test");
-const client_api = client.api<any>("test");
+	const server_api = server.api<any>("test");
+	const client_api = client.api<any>("test");
 
-client.connect("::", 3000, server.id);
+	client.connect("::", 3000, server.id);
 
-client_api.on((remote, data) => {
-	console.clear();
-	console.log("TRANSPORT RECIEVED", remote, data.length);
-	exit(0);
-});
-
-setTimeout(() => {
-	console.log(server.remotes);
-	server.remotes.forEach(remote => {
-		server_api.send(remote, bigshit);
+	client_api.on((remote, data) => {
+		console.clear();
+		console.log("TRANSPORT RECIEVED", remote, data.length);
+		exit(0);
 	});
-}, 700);
 
+	setTimeout(() => {
+		console.log(server.remotes);
+		server.remotes.forEach(remote => {
+			server_api.send(remote, bigshit);
+		});
+	}, 700);
 
-                // 32 BYTES                        32 KB        32MB
-const bigshit = "THIS IS A VERY LONG STRING789012".repeat(1024).repeat(1024);
+	                // 32 BYTES                        32 KB        32MB
+	const bigshit = "THIS IS A VERY LONG STRING789012".repeat(1024).repeat(1024);
+}

@@ -6,7 +6,7 @@
     "build": "tsc",
     "build-dev": "tsc --watch",
     "start": "node .",
-    "start-dev": "node . --cobalt-dev --max-old-space-size=65536 ",
+    "start-dev": "node . --cobalt-test-transfer --max-old-space-size=65536 ",
     "dev": "npm install && npm run build && (npm run build-dev & nodemon --watch dist --exec 'npm run start-dev')"
   },
   "keywords": [],
