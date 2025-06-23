@@ -10,6 +10,7 @@
     "dev": "npm install && npm run build && (npm run build-dev & nodemon --watch dist --exec 'npm run start-dev')"
   },
   "keywords": [],
+  "types": "types/main.d.ts",
   "author": "paincooperation",
   "license": "ISC",
   "description": "Cobalt protocol implementation for Node JS.",
