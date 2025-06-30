@@ -276,7 +276,6 @@ export namespace cobalt {
 				});
 
 				const transaction = shard.inbound.get(transactionID)!;
-				console.log("REC", [transaction.id], frameID, framecount);
 				if (!createHash("sha256").update(frameData).digest().equals(checksum)) {
 					const fid = Buffer.alloc(8);
 					fid.writeBigUInt64LE(frameID, 0);
@@ -357,7 +356,6 @@ export namespace cobalt {
 					remote.port,
 					remote.address,
 				);
-				console.log("RESENT", [transactionID], frameID);
 				setTimeout(() => {
 					outboundframelostcache.delete(frame);
 				}, 500);
