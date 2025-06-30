@@ -6,6 +6,7 @@ export namespace cobalt {
 	export type Serializer <T extends any = any> = (data: T) => Buffer<ArrayBufferLike>;
 	export type Deserializer <T extends any = any> = (buffer: Buffer<ArrayBufferLike>) => T;
 	export type ApiListener <T extends any, D extends any> = (remote: Remote<D>, data: T) => void;
+	export type RemoteListener <T extends any, D extends any> = (api: Api<T, D>, data: T) => void;
 	export type ID = string;
 
 	export enum Signal {
@@ -36,6 +37,10 @@ export namespace cobalt {
 		address: string;
 		port: number;
 		data?: D;
+
+		listeners: Set<RemoteListener<any, D>>;
+		on: <T extends any> (listener: RemoteListener<T, D>) => void;
+		send: <T extends any> (api: Api<T, D>, data: T) => void;
 	}
 
 	export interface Transaction <T extends any, D extends any> {
@@ -207,7 +212,14 @@ export namespace cobalt {
 					data: void 0,
 					id: remoteID,
 					shard,
-				}
+					listeners: new Set(),
+					on: (listener) => {
+						remote.listeners.add(listener)
+					},
+					send: (api, data) => {
+						api.send(remote, data);
+					},
+				};
 				shard.remotes.set(remoteID, remote);
 				shard.socket.send(Buffer.concat([Buffer.from([Signal.Connect]), Buffer.from(shard.id, "binary"), Buffer.from(remote.id, "binary")]), remote.port, remote.address);
 				return;
@@ -293,6 +305,7 @@ export namespace cobalt {
 					const full = Buffer.concat(Array.from(transaction.frames.keys()).sort().map(k => transaction.frames.get(k)!.data));
 					const decoded = api.deserializer(full);
 					transaction.api.listeners.forEach(listener => listener(remote, decoded));
+					remote.listeners.forEach
 					shard.inbound.delete(transaction.id);
 					inboundblocker.add(transaction.id);
 					setTimeout(() => {
@@ -371,7 +384,7 @@ export namespace cobalt {
 	}
 }
 
-if (argv.includes("--argon-test-transfer")) {
+if (argv.includes("--cobalt-test-transfer")) {
 	const server = cobalt.createShard(6);
 	server.listen("::", 3000);
 	const client = cobalt.createShard(6);
@@ -391,7 +404,7 @@ if (argv.includes("--argon-test-transfer")) {
 	setTimeout(() => {
 		console.log(server.remotes);
 		server.remotes.forEach(remote => {
-			server_api.send(remote, bigshit);
+			remote.send(server_api, true);
 		});
 	}, 700);
 
