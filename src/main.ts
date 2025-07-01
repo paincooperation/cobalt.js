@@ -303,13 +303,13 @@ export namespace cobalt {
 				if (BigInt(transaction.frames.size) === transaction.framecount) {
 					const full = Buffer.concat(Array.from(transaction.frames.keys()).sort().map(k => transaction.frames.get(k)!.data));
 					const decoded = api.deserializer(full);
-					transaction.api.listeners.forEach(listener => listener(remote, decoded));
-					remote.listeners.forEach
 					shard.inbound.delete(transaction.id);
 					inboundblocker.add(transaction.id);
 					setTimeout(() => {
 						inboundblocker.delete(transaction.id);
 					}, 3000);
+					transaction.api.listeners.forEach(listener => listener(remote, decoded));
+					remote.listeners.forEach(l => l(api, decoded));
 					return;
 				}
 
@@ -394,7 +394,6 @@ if (argv.includes("--cobalt-test-transfer")) {
 	client.connect("::", 3000, server.id);
 
 	client_api.on((remote, data) => {
-		console.clear();
 		console.log("TRANSPORT RECIEVED", remote, data.length);
 		exit(0);
 	});
@@ -402,10 +401,10 @@ if (argv.includes("--cobalt-test-transfer")) {
 	setTimeout(() => {
 		console.log(server.remotes);
 		server.remotes.forEach(remote => {
-			remote.send(server_api, true);
+			remote.send(server_api, "<DATA>".repeat(1024));
 		});
 	}, 700);
 
 	                // 32 BYTES                        32 KB        32MB
-	const bigshit = "THIS IS A VERY LONG STRING789012".repeat(1024).repeat(1024);
+	//const bigshit = "THIS IS A VERY LONG STRING789012".repeat(1024).repeat(1024);
 }
